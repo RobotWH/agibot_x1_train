@@ -1,0 +1,28 @@
+{
+    "os": "Linux-5.15.0-131-generic-x86_64-with-glibc2.17",
+    "python": "3.8.20",
+    "heartbeatAt": "2025-02-13T02:38:17.732432",
+    "startedAt": "2025-02-13T02:38:15.013874",
+    "docker": null,
+    "gpu": "NVIDIA GeForce RTX 4080 SUPER",
+    "gpu_count": 1,
+    "cpu_count": 16,
+    "cuda": null,
+    "args": [
+        "--task=x1_dh_stand",
+        "--run_name=v1",
+        "--headless"
+    ],
+    "state": "running",
+    "program": "scripts/train.py",
+    "codePath": "humanoid/scripts/train.py",
+    "git": {
+        "remote": "https://github.com/RobotWH/agibot_x1_train.git",
+        "commit": "e6651b9ab843fd1b1be70c087bfb7e8b28e44ccd"
+    },
+    "email": null,
+    "root": "/home/wanghao/zhiyuan/agibot_x1_train",
+    "host": "wanghao",
+    "username": "wanghao",
+    "executable": "/home/wanghao/miniconda3/envs/rl/bin/python"
+}
