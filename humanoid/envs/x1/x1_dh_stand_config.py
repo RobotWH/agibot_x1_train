@@ -41,12 +41,12 @@ class X1DHStandCfg(LeggedRobotCfg):
         frame_stack = 66      #all histroy obs num
         short_frame_stack = 5   #short history step
         c_frame_stack = 3  #all histroy privileged obs num
-        num_single_obs = 47
+        num_single_obs = 65
         num_observations = int(frame_stack * num_single_obs)
-        single_num_privileged_obs = 73
+        single_num_privileged_obs = 97
         single_linvel_index = 53
         num_privileged_obs = int(c_frame_stack * single_num_privileged_obs)
-        num_actions = 12
+        num_actions = 18
         num_envs = 4096
         episode_length_s = 24 #episode length in seconds
         use_ref_actions = False
@@ -60,12 +60,14 @@ class X1DHStandCfg(LeggedRobotCfg):
 
 
     class asset(LeggedRobotCfg.asset):
-        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/x1/urdf/x1.urdf'
+        file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/XBot/urdf/XBot-L.urdf'
         xml_file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/x1/mjcf/xyber_x1_flat.xml'
 
-        name = "x1"
+        name = "XBot"
+        # foot_name = "ankle_roll"
+        # knee_name = "knee_pitch"
         foot_name = "ankle_roll"
-        knee_name = "knee_pitch"
+        knee_name = "knee"
 
         terminate_after_contacts_on = ['base_link']
         penalize_contacts_on = ["base_link"]
@@ -123,36 +125,40 @@ class X1DHStandCfg(LeggedRobotCfg):
 
 
     class init_state(LeggedRobotCfg.init_state):
-        pos = [0.0, 0.0, 0.7]
+        pos = [0.0, 0.0, 0.95]
 
         default_joint_angles = {  # = target angles [rad] when action = 0.0
-            'left_hip_pitch_joint': 0.4,
-            'left_hip_roll_joint': 0.05,
-            'left_hip_yaw_joint': -0.31,
-            'left_knee_pitch_joint': 0.49,
-            'left_ankle_pitch_joint': -0.21,
-            'left_ankle_roll_joint': 0.0,
-            'right_hip_pitch_joint': -0.4,
-            'right_hip_roll_joint': -0.05,
-            'right_hip_yaw_joint': 0.31,
-            'right_knee_pitch_joint': 0.49,
-            'right_ankle_pitch_joint': -0.21, 
-            'right_ankle_roll_joint': 0.0,
+            'left_leg_roll_joint': 0.,          #0
+            'left_leg_yaw_joint': 0.,           #1
+            'left_leg_pitch_joint': 0.,         #2
+            'left_knee_joint': 0.,              #3
+            'left_ankle_pitch_joint': 0.,       #4
+            'left_ankle_roll_joint': 0.,        #5
+            'left_shoulder_pitch_joint': 0.,    #6
+            'left_elbow_pitch_joint': 0.,       #7
+            'left_wrist_roll_joint': 0.,        #8
+            'right_leg_roll_joint': 0.,         #9
+            'right_leg_yaw_joint': 0.,          #10
+            'right_leg_pitch_joint': 0.,        #11
+            'right_knee_joint': 0.,             #12
+            'right_ankle_pitch_joint': 0.,      #13 
+            'right_ankle_roll_joint': 0.,       #14
+            'right_shoulder_pitch_joint': 0.,   #15
+            'right_elbow_pitch_joint': 0.,      #16
+            'right_wrist_roll_joint' : 0.,      #17
         }
 
     class control(LeggedRobotCfg.control):
         # PD Drive parameters:
-        control_type = 'P'
-
-        stiffness = {'hip_pitch_joint': 30, 'hip_roll_joint': 40,'hip_yaw_joint': 35,
-                     'knee_pitch_joint': 100, 'ankle_pitch_joint': 35, 'ankle_roll_joint': 35}
-        damping = {'hip_pitch_joint': 3, 'hip_roll_joint': 3.0,'hip_yaw_joint': 4, 
-                   'knee_pitch_joint': 10, 'ankle_pitch_joint': 0.5, 'ankle_roll_joint': 0.5}
+        stiffness = {'leg_roll': 200.0, 'leg_pitch': 350.0, 'leg_yaw': 200.0,
+                     'knee': 350.0, 'ankle': 15,'shoulder_pitch':200,'elbow_pitch':200,'wrist_roll':200}
+        damping = {'leg_roll': 10, 'leg_pitch': 10, 'leg_yaw':
+                   10, 'knee': 10, 'ankle': 10,'shoulder_pitch':10,'elbow_pitch':10,'wrist_roll':10}
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 0.5
+        action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 10  # 50hz 100hz
+        decimation = 10  # 100hz
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.001  # 200 Hz 1000 Hz
@@ -163,10 +169,10 @@ class X1DHStandCfg(LeggedRobotCfg):
             num_threads = 10
             solver_type = 1  # 0: pgs, 1: tgs
             num_position_iterations = 4
-            num_velocity_iterations = 0
+            num_velocity_iterations = 1
             contact_offset = 0.01  # [m]
             rest_offset = 0.0   # [m]
-            bounce_threshold_velocity = 0.5  # 0.5 #0.5 [m/s]
+            bounce_threshold_velocity = 0.1  # 0.5 #0.5 [m/s]
             max_depenetration_velocity = 1.0
             max_gpu_contact_pairs = 2**23  # 2**24 -> needed for 8000 envs and more
             default_buffer_size_multiplier = 5
@@ -175,7 +181,7 @@ class X1DHStandCfg(LeggedRobotCfg):
 
     class domain_rand(LeggedRobotCfg.domain_rand):
         randomize_friction = True
-        friction_range = [0.2, 1.3]
+        friction_range = [0.1, 2.0]
         restitution_range = [0.0, 0.4]
 
         # push
@@ -187,7 +193,7 @@ class X1DHStandCfg(LeggedRobotCfg):
         max_push_ang_vel = 0.2
 
         randomize_base_mass = True
-        added_mass_range = [-3, 3] # base mass rand range, base mass is all fix link sum mass
+        added_mass_range = [-5, 5] # base mass rand range, base mass is all fix link sum mass
 
         randomize_com = True
         com_displacement_range = [[-0.05, 0.05],
@@ -223,7 +229,7 @@ class X1DHStandCfg(LeggedRobotCfg):
 
         randomize_joint_damping = True
         randomize_joint_damping_each_joint = False
-        joint_damping_range = [0.3, 1.5]
+        joint_damping_range = [5, 15]
         joint_1_damping_range = [0.3, 1.5]
         joint_2_damping_range = [0.3, 1.5]
         joint_3_damping_range = [0.3, 1.5]
@@ -301,12 +307,15 @@ class X1DHStandCfg(LeggedRobotCfg):
             heading = [-3.14, 3.14]
 
     class rewards:
+
         soft_dof_pos_limit = 0.98
         soft_dof_vel_limit = 0.9
         soft_torque_limit = 0.9
-        base_height_target = 0.61
+        base_height_target = 0.89
         foot_min_dist = 0.2
-        foot_max_dist = 1.0
+        foot_max_dist = 0.4
+        knee_min_dist = 0.2
+        knee_max_dist = 0.4
 
         # final_swing_joint_pos = final_swing_joint_delta_pos + default_pos
         final_swing_joint_delta_pos = [0.25, 0.05, -0.11, 0.35, -0.16, 0.0, -0.25, -0.05, 0.11, 0.35, -0.16, 0.0]
@@ -321,7 +330,10 @@ class X1DHStandCfg(LeggedRobotCfg):
         max_contact_force = 700  # forces above this value are penalized
         
         class scales:
-            ref_joint_pos = 2.2
+            # ref_joint_pos = 2.2
+            other_joint_pos = 2.0
+            arms_joint_pos = 2.0
+            legs_joint_pos = 2.0
             feet_clearance = 1.
             feet_contact_number = 2.0
             # gait
@@ -329,6 +341,7 @@ class X1DHStandCfg(LeggedRobotCfg):
             foot_slip = -0.1
             feet_distance = 0.2
             knee_distance = 0.2
+
             # contact 
             feet_contact_forces = -0.01
             # vel tracking
@@ -404,7 +417,7 @@ class X1DHStandCfgPPO(LeggedRobotCfgPPO):
 
         # logging
         save_interval = 100  # check for potential saves every this many iterations
-        experiment_name = 'x1_dh_stand'
+        experiment_name = 'Xbot_stand2walk'
         run_name = ''
         # load and resume
         resume = False

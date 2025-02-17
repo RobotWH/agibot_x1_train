@@ -98,7 +98,7 @@ class DHOnPolicyRunner:
         # initialize writer
         if self.log_dir is not None and self.writer is None:
             wandb.init(
-                project="x1_dh_stand",
+                project="Xbot_stand2walk",
                 sync_tensorboard=True,
                 name=self.wandb_run_name,
                 config=self.all_cfg,
